@@ -1,0 +1,51 @@
+        <Name>msg_iodc:ir108</Name>
+        <Title>High Rate SEVIRI IR10.8 μm Image - MSG - Indian Ocean</Title>
+        <Abstract>Rectified (level 1.5) Meteosat SEVIRI image data. The data is transmitted as High Rate transmissions in 12 spectral channels. Level 1.5 image data corresponds to the geolocated and radiometrically pre-processed image data, ready for further processing, e.g. the extraction of meteorological products. Any spacecraft specific effects have been removed, and in particular, linearisation and equalisation of the image radiometry has been performed for all SEVIRI channels. The on-board blackbody data has been processed. Both radiometric and geometric quality control information is included.&amp;#13;&amp;#10;&amp;#13;&amp;#10;&amp;#13;&amp;#10;From 1 June 2022, Meteosat-9 at 45.5° E is the prime satellite for the IODC service, replacing Meteosat-8 (located at 41.5° E while in operation).</Abstract>
+        <KeywordList>
+          <Keyword>msg_iodc_ir108</Keyword>
+          <Keyword>WCS</Keyword>
+          <Keyword>ImageMosaic</Keyword>
+        </KeywordList>
+        <CRS>EPSG:4326</CRS>
+        <CRS>CRS:84</CRS>
+        <EX_GeographicBoundingBox>
+          <westBoundLongitude>-35.5</westBoundLongitude>
+          <eastBoundLongitude>118.5</eastBoundLongitude>
+          <southBoundLatitude>-77.0</southBoundLatitude>
+          <northBoundLatitude>77.0</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="CRS:84" minx="-35.5" miny="-77.0" maxx="118.5" maxy="77.0"/>
+        <BoundingBox CRS="EPSG:4326" minx="-77.0" miny="-35.5" maxx="77.0" maxy="118.5"/>
+        <Dimension name="time" default="2026-02-22T09:15:00Z" units="ISO8601" nearestValue="1">2020-08-01T00:00:00.000Z/2026-02-22T09:15:00.000Z/PT15M</Dimension>
+        <Style>
+          <Name>raster</Name>
+          <Title>A simple default style</Title>
+          <Abstract>A sample style for rasters</Abstract>
+          <LegendURL width="20" height="20">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://view.eumetsat.int/geoserver/ows?service=WMS&amp;version=1.3.0&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=msg_iodc%3Air108"/>
+          </LegendURL>
+        </Style>
+      </Layer>
+      <Layer queryable="1" opaque="0">
+        <Name>osmgray:land_polygons</Name>
+        <Title>land_polygons</Title>
+        <Abstract/>
+        <KeywordList>
+          <Keyword>features</Keyword>
+          <Keyword>land_polygons</Keyword>
+        </KeywordList>
+        <CRS>EPSG:3857</CRS>
+        <CRS>CRS:84</CRS>
+        <EX_GeographicBoundingBox>
+          <westBoundLongitude>-180.00000000000003</westBoundLongitude>
+          <eastBoundLongitude>180.00000000000003</eastBoundLongitude>
+          <southBoundLatitude>-85.05999999999999</southBoundLatitude>
+          <northBoundLatitude>85.05999999999999</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="CRS:84" minx="-180.00000000000003" miny="-85.05999999999999" maxx="180.00000000000003" maxy="85.05999999999999"/>
+        <BoundingBox CRS="EPSG:3857" minx="-2.0037508342789244E7" miny="-2.00489661040146E7" maxx="2.0037508342789244E7" maxy="2.0048966104014594E7"/>
+        <Style>
+          <Name>osmgray:world_light</Name>
+          <Title>osmgray:world_light</Title>
+          <LegendURL width="20" height="20">

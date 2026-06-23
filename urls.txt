@@ -1,0 +1,10 @@
+https://services-{s}.meteored.com
+https://services.meteored.com
+https://services.meteored.com/web/warnings/v4
+https://services.meteored.com/web/search/viewer/v4
+https://services.meteored.com/web/weather/viewer/v4/ecmwf/
+https://services.meteored.com/web/viewer-pub/location-info/v4/
+https://services.meteored.com/web/viewer-pub/stations/
+https://www.meteored.com/apps/download
+http://www.w3.org/2000/svg
+https://leafletjs.com
