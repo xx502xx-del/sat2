@@ -1,7 +1,6 @@
 /**
- * StitchedMeteorLayer - نسخة مصلحة
- * يجمع مربعات Meteored في canvas واحد ويعرضها كصورة واحدة
- * الإصلاح: استخدام useRef للـ callbacks لتفادي infinite re-render loop
+ * StitchedMeteorLayer - النسخة المطورة بنظام ريتنا @2x وتعدد النطاقات
+ * تدعم دقة 512px ونطاقات موزعة (services-a, b, c) ومستويات زوم حتى 9
  */
 import { useEffect, useRef, useCallback } from 'react';
 import { useMap, useMapEvents } from 'react-leaflet';
@@ -32,7 +31,6 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
   const mountedRef = useRef(true);
   const pendingTokenRef = useRef(null);
 
-  // ✅ الإصلاح: استخدام refs للـ callbacks لتجنب إعادة إنشاء updateOverlay عند كل render
   const onLoadRef = useRef(onLoad);
   const onLoadingRef = useRef(onLoading);
   useEffect(() => { onLoadRef.current = onLoad; }, [onLoad]);
@@ -41,7 +39,6 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
   const updateOverlay = useCallback(async () => {
     if (!mountedRef.current) return;
 
-    // إلغاء أي طلب سابق
     if (pendingTokenRef.current) pendingTokenRef.current.cancelled = true;
     const token = { cancelled: false };
     pendingTokenRef.current = token;
@@ -49,7 +46,8 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
     if (onLoadingRef.current) onLoadingRef.current();
 
     const bounds = map.getBounds();
-    const zoom = Math.min(Math.max(Math.round(map.getZoom()), 3), 7);
+    // دعم زوم حتى 9 بدقة عالية
+    const zoom = Math.min(Math.max(Math.round(map.getZoom()), 3), 9);
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
 
@@ -58,13 +56,16 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
     const tilesX = tileMax.x - tileMin.x + 1;
     const tilesY = tileMax.y - tileMin.y + 1;
 
-    const TILE_SIZE = 256;
+    // استخدام دقة الريتنا 512px مثل تطبيق Meteored Pro الرسمي
+    const TILE_SIZE = 512;
     const canvas = document.createElement('canvas');
     canvas.width = tilesX * TILE_SIZE;
     canvas.height = tilesY * TILE_SIZE;
     const ctx = canvas.getContext('2d');
 
-    // جلب جميع المربعات بشكل متوازٍ
+    const subdomains = ['services-a', 'services-b', 'services-c'];
+
+    // جلب جميع المربعات بصيغة @2x بشكل متوازٍ وموزع على السيرفرات
     const tilePromises = [];
     for (let tx = tileMin.x; tx <= tileMax.x; tx++) {
       for (let ty = tileMin.y; ty <= tileMax.y; ty++) {
@@ -72,8 +73,16 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
           const img = new Image();
           img.crossOrigin = 'anonymous';
           img.onload = () => resolve({ img, tx, ty });
-          img.onerror = () => resolve(null);
-          img.src = `https://services-a.meteored.com/img/tiles/viewer/satellite/${zoom}/${tx}/${ty}/${timestamp}_${layerType}.jpg`;
+          img.onerror = () => {
+            const fallbackImg = new Image();
+            fallbackImg.crossOrigin = 'anonymous';
+            fallbackImg.onload = () => resolve({ img: fallbackImg, tx, ty });
+            fallbackImg.onerror = () => resolve(null);
+            const sub = subdomains[(tx + ty) % subdomains.length];
+            fallbackImg.src = `https://${sub}.meteored.com/img/tiles/viewer/satellite/${zoom}/${tx}/${ty}/${timestamp}_${layerType}.jpg`;
+          };
+          const sub = subdomains[(tx + ty) % subdomains.length];
+          img.src = `https://${sub}.meteored.com/img/tiles/viewer/satellite/${zoom}/${tx}/${ty}/${timestamp}_${layerType}@2x.jpg`;
         }));
       }
     }
@@ -84,19 +93,17 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
     results.forEach((result) => {
       if (!result) return;
       const { img, tx, ty } = result;
-      ctx.drawImage(img, (tx - tileMin.x) * TILE_SIZE, (ty - tileMin.y) * TILE_SIZE);
+      ctx.drawImage(img, (tx - tileMin.x) * TILE_SIZE, (ty - tileMin.y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     });
 
-    // الحدود الجغرافية الدقيقة للصورة (تتوافق مع نظام Mercator الذي تستخدمه Leaflet)
     const nw = tileToLatLng(tileMin.x, tileMin.y, zoom);
     const se = tileToLatLng(tileMax.x + 1, tileMax.y + 1, zoom);
     const imageBounds = L.latLngBounds([se.lat, nw.lng], [nw.lat, se.lng]);
 
     let dataUrl;
     try {
-      dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      dataUrl = canvas.toDataURL('image/jpeg', 0.95);
     } catch (e) {
-      // CORS issue - silently fail and stop spinner
       if (onLoadRef.current) onLoadRef.current();
       pendingTokenRef.current = null;
       return;
@@ -115,7 +122,6 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
 
     if (onLoadRef.current) onLoadRef.current();
     pendingTokenRef.current = null;
-  // ✅ لا يوجد onLoad/onLoading في deps - نستخدم الـ refs بدلاً منها
   }, [map, layerType, timestamp, opacity, zIndex]);
 
   useEffect(() => {
