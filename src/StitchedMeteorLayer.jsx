@@ -47,7 +47,7 @@ export default function StitchedMeteorLayer({ layerType, timestamp, opacity = 1.
 
     const bounds = map.getBounds();
     // دعم زوم حتى 9 بدقة عالية
-    const zoom = Math.min(Math.max(Math.round(map.getZoom()), 3), 11);
+    const zoom = Math.min(Math.max(Math.round(map.getZoom()), 3), 8);
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
 

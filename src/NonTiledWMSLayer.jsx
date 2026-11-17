@@ -133,7 +133,7 @@ export default function NonTiledWMSLayer({
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       if (mountedRef.current) updateOverlay();
-    }, 300);
+    }, 120);
   }, [updateOverlay]);
 
   // تهيئة الـ overlay — الطلب الأول فوري (لا debounce) لأسرع عرض ممكن
