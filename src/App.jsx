@@ -468,6 +468,7 @@ export default function App() {
           {/* ═══ طبقة الحدود — EPSG:3857 متطابق مع EUMETSAT ═══ */}
           <NonTiledWMSLayer
             key="boundaries"
+            pane="shadowPane"
             url={SATELLITE_URL}
             layers="ne_10m_coastline,ne_boundary_lines_land,ne_10m_admin_1_states_provinces_lines"
             format="image/png"

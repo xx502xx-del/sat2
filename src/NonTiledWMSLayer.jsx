@@ -36,7 +36,7 @@ export default function NonTiledWMSLayer({
   zIndex = 10,
   useMercator = false,
   onLoad,
-  onLoading,
+  onLoading, pane,
 }) {
   const map         = useMap();
   const overlayRef  = useRef(null);
